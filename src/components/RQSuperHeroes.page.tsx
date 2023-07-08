@@ -10,13 +10,17 @@ interface SuperHero {
 const fetchSuperHeroes = () => axios.get("http://localhost:4000/superheroes");
 
 function RQSuperHeroesPage() {
-  const { isLoading, data } = useQuery<AxiosResponse<SuperHero[]>, AxiosError>(
-    "super-heroes",
-    fetchSuperHeroes
-  );
+  const { isLoading, data, isError, error } = useQuery<
+    AxiosResponse<SuperHero[]>,
+    AxiosError
+  >("super-heroes", fetchSuperHeroes);
 
   if (isLoading) {
     return <h2>Loading...</h2>;
+  }
+
+  if (isError) {
+    return <h2>{error.message}</h2>;
   }
 
   return (
