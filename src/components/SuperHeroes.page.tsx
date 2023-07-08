@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 
 interface SuperHero {
@@ -10,6 +10,7 @@ interface SuperHero {
 function SuperHeroesPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<SuperHero[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const getData = async () => {
@@ -18,7 +19,10 @@ function SuperHeroesPage() {
         setData(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error(error);
+        if (error instanceof AxiosError) {
+          setError(error.message);
+          setIsLoading(false);
+        }
       }
     };
 
@@ -27,6 +31,10 @@ function SuperHeroesPage() {
 
   if (isLoading) {
     return <h2>Loading...</h2>;
+  }
+
+  if (error) {
+    return <h2>{error}</h2>;
   }
 
   return (
