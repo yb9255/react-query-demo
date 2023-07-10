@@ -13,7 +13,9 @@ function RQSuperHeroesPage() {
   const { isLoading, data, isError, error } = useQuery<
     AxiosResponse<SuperHero[]>,
     AxiosError
-  >("super-heroes", fetchSuperHeroes);
+  >("super-heroes", fetchSuperHeroes, {
+    cacheTime: 300_000, // default
+  });
 
   if (isLoading) {
     return <h2>Loading...</h2>;
