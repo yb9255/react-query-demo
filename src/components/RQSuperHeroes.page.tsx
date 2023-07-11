@@ -10,12 +10,15 @@ interface SuperHero {
 const fetchSuperHeroes = () => axios.get("http://localhost:4000/superheroes");
 
 function RQSuperHeroesPage() {
-  const { isLoading, data, isError, error } = useQuery<
+  const { isLoading, data, isError, error, isFetching } = useQuery<
     AxiosResponse<SuperHero[]>,
     AxiosError
   >("super-heroes", fetchSuperHeroes, {
-    cacheTime: 300_000, // default
+    cacheTime: 300000, // default
+    staleTime: 300000,
   });
+
+  console.log(isLoading, isFetching);
 
   if (isLoading) {
     return <h2>Loading...</h2>;
