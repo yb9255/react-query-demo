@@ -10,7 +10,15 @@ interface SuperHero {
 const fetchSuperHeroes = () => axios.get("http://localhost:4000/superheroes");
 
 function RQSuperHeroesPage() {
-  const { isLoading, data, isError, error, isFetching } = useQuery<
+  const onSuccess = () => {
+    console.log("Perform side effect after data fetching");
+  };
+
+  const onError = () => {
+    console.log("Perform side effect after encountering error");
+  };
+
+  const { isLoading, data, isError, error, isFetching, refetch } = useQuery<
     AxiosResponse<SuperHero[]>,
     AxiosError
   >("super-heroes", fetchSuperHeroes, {
@@ -19,6 +27,9 @@ function RQSuperHeroesPage() {
     refetchOnMount: true, //or 'always' default
     refetchOnWindowFocus: true, //or 'always' default
     refetchInterval: false, // can set some milliseconds for polling. it's stopped when window loses focus
+    enabled: false, // automatically fetching data. default true
+    onSuccess,
+    onError,
   });
 
   console.log({ isLoading, isFetching });
@@ -34,6 +45,7 @@ function RQSuperHeroesPage() {
   return (
     <>
       <h2>RQ Super Heroes Page</h2>
+      <button onClick={() => refetch()}>Fetch Heroes</button>
       {data?.data.map((hero) => (
         <div key={hero.id}>{hero.name}</div>
       ))}
