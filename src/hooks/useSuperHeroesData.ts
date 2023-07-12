@@ -15,10 +15,10 @@ interface Props {
 }
 
 export const useSuperHeroesData = ({ onSuccess, onError }: Props) => {
-  const { isLoading, data, isError, error, isFetching, refetch } = useQuery<
+  return useQuery<
     AxiosResponse<SuperHero[]>,
-    AxiosError,
-    string[]
+    AxiosError
+    // string[]
   >("super-heroes", fetchSuperHeroes, {
     cacheTime: 300000, // default
     staleTime: 0, // default
@@ -28,9 +28,7 @@ export const useSuperHeroesData = ({ onSuccess, onError }: Props) => {
     enabled: false, // automatically fetching data. default true
     onSuccess,
     onError,
-    select: (data: AxiosResponse<SuperHero[]>) =>
-      data.data.map((superHero) => superHero.name),
+    // select: (data: AxiosResponse<SuperHero[]>) =>
+    //   data.data.map((superHero) => superHero.name),
   });
-
-  return { isLoading, data, isError, error, isFetching, refetch };
 };
