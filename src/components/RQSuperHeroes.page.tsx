@@ -15,10 +15,13 @@ function RQSuperHeroesPage() {
     AxiosError
   >("super-heroes", fetchSuperHeroes, {
     cacheTime: 300000, // default
-    staleTime: 300000,
+    staleTime: 0, // default
+    refetchOnMount: true, //or 'always' default
+    refetchOnWindowFocus: true, //or 'always' default
+    refetchInterval: false, // can set some milliseconds for polling. it's stopped when window loses focus
   });
 
-  console.log(isLoading, isFetching);
+  console.log({ isLoading, isFetching });
 
   if (isLoading) {
     return <h2>Loading...</h2>;
