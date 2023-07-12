@@ -20,7 +20,8 @@ function RQSuperHeroesPage() {
 
   const { isLoading, data, isError, error, isFetching, refetch } = useQuery<
     AxiosResponse<SuperHero[]>,
-    AxiosError
+    AxiosError,
+    string[]
   >("super-heroes", fetchSuperHeroes, {
     cacheTime: 300000, // default
     staleTime: 0, // default
@@ -30,6 +31,8 @@ function RQSuperHeroesPage() {
     enabled: false, // automatically fetching data. default true
     onSuccess,
     onError,
+    select: (data: AxiosResponse<SuperHero[]>) =>
+      data.data.map((superHero) => superHero.name),
   });
 
   console.log({ isLoading, isFetching });
@@ -46,8 +49,11 @@ function RQSuperHeroesPage() {
     <>
       <h2>RQ Super Heroes Page</h2>
       <button onClick={() => refetch()}>Fetch Heroes</button>
-      {data?.data.map((hero) => (
+      {/* {data?.data.map((hero) => (
         <div key={hero.id}>{hero.name}</div>
+      ))} */}
+      {data?.map((hero) => (
+        <div key={hero}>{hero}</div>
       ))}
     </>
   );
