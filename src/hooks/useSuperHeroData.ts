@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { QueryKey, useQuery } from "react-query";
 
-interface SuperHero {
+export interface SuperHero {
   id: number;
   name: string;
   alterEgo: string;
