@@ -30,7 +30,7 @@ function RQSuperHeroesPage() {
     <>
       <h2>RQ Super Heroes Page</h2>
       <button onClick={() => refetch()}>Fetch Heroes</button>
-      {data?.data.map((hero) => (
+      {data?.map((hero) => (
         <div key={hero.id}>
           <Link to={`/rq-super-heroes/${hero.id}`}>{hero.name}</Link>
         </div>
