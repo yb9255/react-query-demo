@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { QueryKey, useQuery } from "react-query";
+import { QueryKey, useQuery, useQueryClient } from "react-query";
 
 export interface SuperHero {
   id: number;
@@ -11,10 +11,23 @@ const fetchSuperHero = ({ queryKey }: { queryKey: QueryKey }) =>
   axios.get(`http://localhost:4000/superheroes/${queryKey[1]}`);
 
 export const useSuperHeroData = (heroId: string) => {
-  console.log(heroId);
+  const queryClient = useQueryClient();
 
-  return useQuery<AxiosResponse<SuperHero>, AxiosError>(
+  return useQuery<AxiosResponse<SuperHero> | { data: SuperHero }, AxiosError>(
     ["super-hero", heroId],
-    fetchSuperHero
+    fetchSuperHero,
+    {
+      initialData: () => {
+        const hero = queryClient
+          .getQueryData<AxiosResponse<SuperHero[]>>("super-heroes")
+          ?.data?.find((hero) => hero.id === Number.parseInt(heroId));
+
+        if (hero) {
+          return {
+            data: hero,
+          };
+        }
+      },
+    }
   );
 };
