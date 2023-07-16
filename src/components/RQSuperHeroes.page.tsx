@@ -9,7 +9,12 @@ function RQSuperHeroesPage() {
   const [name, setName] = useState("");
   const [alterEgo, setAlterEgo] = useState("");
 
-  const { mutate: addHero } = useAddSuperHeroData();
+  const {
+    mutate: addHero,
+    isLoading: isAddHeroLoading,
+    isError: isAddHeroError,
+    error: addHeroError,
+  } = useAddSuperHeroData();
 
   const onSuccess = () => {
     console.log("Perform side effect after data fetching");
@@ -30,12 +35,16 @@ function RQSuperHeroesPage() {
       onError,
     });
 
-  if (isLoading || isFetching) {
+  if (isLoading || isFetching || isAddHeroLoading) {
     return <h2>Loading...</h2>;
   }
 
   if (isError) {
     return <h2>{error?.message}</h2>;
+  }
+
+  if (isAddHeroError) {
+    return <h2>{addHeroError?.message}</h2>;
   }
 
   return (

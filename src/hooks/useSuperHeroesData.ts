@@ -36,5 +36,9 @@ export const useSuperHeroesData = ({ onSuccess, onError }: Props) => {
 };
 
 export const useAddSuperHeroData = () => {
-  return useMutation(addSuperHero);
+  return useMutation<
+    AxiosResponse<SuperHero>,
+    AxiosError,
+    { name: string; alterEgo: string }
+  >(addSuperHero);
 };
