@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 
 interface SuperHero {
   id: number;
@@ -27,7 +27,7 @@ export const useSuperHeroesData = ({ onSuccess, onError }: Props) => {
     refetchOnMount: true, //or 'always' default
     refetchOnWindowFocus: true, //or 'always' default
     refetchInterval: false, // can set some milliseconds for polling. it's stopped when window loses focus
-    enabled: false, // automatically fetching data. default true
+    enabled: true, // automatically fetching data. default true
     onSuccess,
     onError,
     // select: (data: AxiosResponse<SuperHero[]>) =>
@@ -36,9 +36,16 @@ export const useSuperHeroesData = ({ onSuccess, onError }: Props) => {
 };
 
 export const useAddSuperHeroData = () => {
+  const queryClient = useQueryClient();
+
   return useMutation<
     AxiosResponse<SuperHero>,
     AxiosError,
     { name: string; alterEgo: string }
-  >(addSuperHero);
+  >(addSuperHero, {
+    onSuccess: () => {
+      // it doesn't work when enabled option is false in useQuery
+      queryClient.invalidateQueries("super-heroes");
+    },
+  });
 };
