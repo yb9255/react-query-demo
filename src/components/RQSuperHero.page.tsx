@@ -18,7 +18,7 @@ function RQSuperHeroPage() {
 
   return (
     <div>
-      {data?.name} - {data?.alterEgo}
+      {data?.data.name} - {data?.data.alterEgo}
     </div>
   );
 }

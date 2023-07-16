@@ -1,5 +1,5 @@
-import axios from "axios";
-import { QueryKey, useQuery, useQueryClient } from "react-query";
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { QueryKey, useQuery } from "react-query";
 
 export interface SuperHero {
   id: number;
@@ -7,31 +7,14 @@ export interface SuperHero {
   alterEgo: string;
 }
 
-const fetchSuperHero = async ({ queryKey }: { queryKey: QueryKey }) => {
-  const response = await axios.get(
-    `http://localhost:4000/superheroes/${queryKey[1]}`
-  );
-
-  return response.data;
-};
+const fetchSuperHero = ({ queryKey }: { queryKey: QueryKey }) =>
+  axios.get(`http://localhost:4000/superheroes/${queryKey[1]}`);
 
 export const useSuperHeroData = (heroId: string) => {
-  const queryClient = useQueryClient();
+  console.log(heroId);
 
-  return useQuery<SuperHero, { message: string }>(
+  return useQuery<AxiosResponse<SuperHero>, AxiosError>(
     ["super-hero", heroId],
-    fetchSuperHero,
-    {
-      enabled: false,
-      initialData: () => {
-        const hero = queryClient
-          .getQueryData<SuperHero[]>("super-heroes")
-          ?.find((hero) => hero.id === Number(heroId));
-
-        if (hero) {
-          return hero;
-        }
-      },
-    }
+    fetchSuperHero
   );
 };
