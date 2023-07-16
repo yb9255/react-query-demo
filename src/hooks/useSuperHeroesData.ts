@@ -1,5 +1,5 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
-import { useQuery } from "react-query";
+import { useQuery, useMutation } from "react-query";
 
 interface SuperHero {
   id: number;
@@ -8,6 +8,8 @@ interface SuperHero {
 }
 
 const fetchSuperHeroes = () => axios.get("http://localhost:4000/superheroes");
+const addSuperHero = (hero: { name: string; alterEgo: string }) =>
+  axios.post("http://localhost:4000/superheroes", hero);
 
 interface Props {
   onSuccess: () => void;
@@ -31,4 +33,8 @@ export const useSuperHeroesData = ({ onSuccess, onError }: Props) => {
     // select: (data: AxiosResponse<SuperHero[]>) =>
     //   data.data.map((superHero) => superHero.name),
   });
+};
+
+export const useAddSuperHeroData = () => {
+  return useMutation(addSuperHero);
 };
