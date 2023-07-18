@@ -24,6 +24,16 @@
       "name": "Shazam",
       "alterEgo": "Billy Batson",
       "id": 5
+    },
+    {
+      "name": "asd",
+      "alterEgo": "123",
+      "id": 6
+    },
+    {
+      "name": "bcd",
+      "alterEgo": "234",
+      "id": 7
     }
   ],
   "friends": [
@@ -49,7 +59,11 @@
   "channels": [
     {
       "id": "codevolution",
-      "courses": ["react", "vue", "angular"]
+      "courses": [
+        "react",
+        "vue",
+        "angular"
+      ]
     }
   ],
   "colors": [

@@ -43,9 +43,22 @@ export const useAddSuperHeroData = () => {
     AxiosError,
     { name: string; alterEgo: string }
   >(addSuperHero, {
-    onSuccess: () => {
+    onSuccess: (data) => {
       // it doesn't work when enabled option is false in useQuery
-      queryClient.invalidateQueries("super-heroes");
+      // queryClient.invalidateQueries("super-heroes");
+      queryClient.setQueryData<AxiosResponse<SuperHero[]> | undefined>(
+        "super-heroes",
+        (oldQueryData) => {
+          if (oldQueryData) {
+            return {
+              ...oldQueryData,
+              data: [...oldQueryData.data, data.data],
+            };
+          }
+
+          return oldQueryData;
+        }
+      );
     },
   });
 };
