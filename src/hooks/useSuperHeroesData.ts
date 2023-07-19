@@ -7,6 +7,10 @@ interface SuperHero {
   alterEgo: string;
 }
 
+interface AddSuperHeroContext {
+  previousHeroData: SuperHero | undefined;
+}
+
 const fetchSuperHeroes = () => axios.get("http://localhost:4000/superheroes");
 const addSuperHero = (hero: { name: string; alterEgo: string }) =>
   axios.post("http://localhost:4000/superheroes", hero);
@@ -41,24 +45,62 @@ export const useAddSuperHeroData = () => {
   return useMutation<
     AxiosResponse<SuperHero>,
     AxiosError,
-    { name: string; alterEgo: string }
+    { name: string; alterEgo: string },
+    AddSuperHeroContext
   >(addSuperHero, {
-    onSuccess: (data) => {
-      // it doesn't work when enabled option is false in useQuery
-      // queryClient.invalidateQueries("super-heroes");
-      queryClient.setQueryData<AxiosResponse<SuperHero[]> | undefined>(
-        "super-heroes",
-        (oldQueryData) => {
-          if (oldQueryData) {
-            return {
-              ...oldQueryData,
-              data: [...oldQueryData.data, data.data],
-            };
-          }
+    // onSuccess: (data) => {
+    //   // it doesn't work when enabled option is false in useQuery
+    //   // queryClient.invalidateQueries("super-heroes");
+    //   queryClient.setQueryData<AxiosResponse<SuperHero[]> | undefined>(
+    //     "super-heroes",
+    //     (oldQueryData) => {
+    //       if (oldQueryData) {
+    //         return {
+    //           ...oldQueryData,
+    //           data: [...oldQueryData.data, data.data],
+    //         };
+    //       }
 
-          return oldQueryData;
-        }
-      );
+    //       return oldQueryData;
+    //     }
+    //   );
+    // },
+    onMutate: async (newHero) => {
+      await queryClient.cancelQueries("super-heroes");
+
+      const previousHeroData =
+        queryClient.getQueryData<SuperHero>("super-heroes");
+
+      if (previousHeroData) {
+        queryClient.setQueryData<AxiosResponse<SuperHero[]> | undefined>(
+          "super-heroes",
+          (oldQueryData) => {
+            if (oldQueryData) {
+              return {
+                ...oldQueryData,
+                data: [
+                  ...oldQueryData.data,
+                  { id: oldQueryData.data.length + 1, ...newHero },
+                ],
+              };
+            }
+
+            return oldQueryData;
+          }
+        );
+      }
+
+      return {
+        previousHeroData,
+      };
+    }, //fired before mutation function is fired
+    onError: (_error, _hero, context) => {
+      if (context?.previousHeroData) {
+        queryClient.setQueryData("super-heroes", context.previousHeroData);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries("super-heroes");
     },
   });
 };

@@ -34,6 +34,11 @@
       "name": "bcd",
       "alterEgo": "234",
       "id": 7
+    },
+    {
+      "name": "Aquaman",
+      "alterEgo": "Arthur Curry",
+      "id": 8
     }
   ],
   "friends": [
